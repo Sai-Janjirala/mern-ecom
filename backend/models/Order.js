@@ -22,6 +22,7 @@ const OrderSchema = new mongoose.Schema({
     default : 'COD'
   },
   status : {
+    type: String,
     default: 'placed'
   }
 },{

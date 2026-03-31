@@ -48,11 +48,6 @@ const placeOrder = async (req,res) => {
     res.status(500).json({ msg: " Internal Server error" });
   }
 
-  return (
-    <div>
-      
-    </div>
-  )
 }
 
-export default orderController
+export { placeOrder };

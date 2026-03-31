@@ -3,10 +3,11 @@ import Address from "../models/Address.js";
 // Add a new address
 export const addAddress = async (req, res) => {
   try {
-    const { userId, address, city, state, pincode, phone, notes } = req.body;
+    const { userId, fullName, addressLine, city, state, pincode, phone, notes } = req.body;
     const newAddress = new Address({
       userId,
-      address,
+      fullName,
+      addressLine,
       city,
       state,
       pincode,
