@@ -1,27 +1,30 @@
-import {useState,useEffect} from 'react'
-import api from '../api/axios.js'
-import {useNavigate} from 'react-router'
+import { useState, useEffect } from "react";
+import api from "../api/axios.js";
+import { useNavigate } from "react-router";
 
 const Checkout = () => {
-  const userId = localStorage.getItem('userId');
-  const [address,setAddress] = useState([]);
-  const [selectedAddress,setSelectAddress] = useState(null);
-  const [cart,setCart] = useState(null);
+  const userId = localStorage.getItem("userId");
+  const [address, setAddress] = useState([]);
+  const [selectedAddress, setSelectAddress] = useState(null);
+  const [cart, setCart] = useState(null);
   const navigate = useNavigate();
-  useEffect(()=>{
-    if(!userId){
-      navigate('/login');
+
+  useEffect(() => {
+    if (!userId) {
+      navigate("/login");
       return;
     }
-    api.get(`/cart/${userId}`).then((res)=>{
+    api.get(`/cart/${userId}`).then((res) => {
       setCart(res.data.cart);
-    })
-    api.get(`/address/${userId}`).then((res)=>{
-      setAddress(res.data.address);
-      setSelectAddress(res.data[0]); // Default to first address
-    })
-  },[])
-  if(!cart){
+    });
+    api.get(`/address/${userId}`).then((res) => {
+      const addresses = res.data.addresses || [];
+      setAddress(addresses);
+      setSelectAddress(addresses[0] || null);
+    });
+  }, [navigate, userId]);
+
+  if (!cart) {
     return (
       <div>
         <h1>Loading...</h1>
@@ -29,29 +32,32 @@ const Checkout = () => {
     )
   }
 
-  const total = cart.items.reduce(
-    (sum,i) => sum + i.product.price , 0
-  )
+  const total = cart.items.reduce((sum, item) => {
+    return sum + item.quantity * (item.productId?.price || 0);
+  }, 0);
 
-  const placeOrder = async  ()=> {
-    if(!selectedAddress){
-      alert('Please select an address');
+  const placeOrder = async () => {
+    if (!selectedAddress) {
+      alert("Please select an address");
       return;
     }
-    const res = await api.post('/order/place', {userId, address: selectedAddress});
-    navigate(`/order/place${res.data.order._id}`); 
-  }
+    const res = await api.post("/order/place", { userId, address: selectedAddress });
+    navigate(`/order-success/${res.data.order._id}`);
+  };
+
   return (
-    <div className='max-w-4xl mx-auto p-6'>
-      <h1 className='text-2xl font-bold mb-4'>Checkout</h1>
-      <h2 className='font-semibold mb-2'>Select Address</h2>
-      {
-        address.map((addr)=>{
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">Checkout</h1>
+      <h2 className="font-semibold mb-2">Select Address</h2>
+      {address.length === 0 ? (
+        <p className="mb-4 text-sm text-gray-600">No saved address found. Add one to continue.</p>
+      ) : (
+        address.map((addr) => (
           <label key={addr._id} className='block border p-3 rounded cursor-pointer'>
             <input
             type='radio'
             name = 'address'
-            checked={selectAddress?._id === addr._id}
+            checked={selectedAddress?._id === addr._id}
             onChange={() => setSelectAddress(addr)}
             className='mr-2'
             />
@@ -62,9 +68,9 @@ const Checkout = () => {
                 {addr.phone}
               </p>
           </label>
-        })
-      }
-      <h2 className='font-semibold mb-2'>Order Summary</h2>
+        ))
+      )}
+      <h2 className='font-semibold mb-2 mt-6'>Order Summary</h2>
       <p>Total Amount : ${total}</p>
         <button
         onClick={placeOrder}
@@ -72,7 +78,7 @@ const Checkout = () => {
           Place Order (COD)
         </button>
     </div>
-  )
-}
+  );
+};
 
-export default Checkout
+export default Checkout;
