@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '../api/axios.js';
+import axiosInstance from '../api/axiosInstance.js';
 import { Link } from 'react-router';
 
 const Home = () => {
@@ -11,7 +11,7 @@ const Home = () => {
   // ── Fetches products; re-runs whenever search text or category changes ──
   const loadProducts = async () => {
     try {
-      const response = await api.get(`/products?search=${search}&category=${category}`);
+      const response = await axiosInstance.get(`/products?search=${search}&category=${category}`);
       setProducts(Array.isArray(response.data?.products) ? response.data.products : []);
     } catch (error) {
       console.error('Failed to load products', error);
@@ -25,7 +25,7 @@ const Home = () => {
   const addToCart = async (productId) => {
     const userId = localStorage.getItem('userId');
     if (!userId) { alert('Please login to add to cart'); return; }
-    const res = await api.post('/cart/add', { userId, productId });
+    const res = await axiosInstance.post('/cart/add', { userId, productId });
     const total = res.data.cart.items.reduce((sum, item) => sum + item.quantity, 0);
     localStorage.setItem('cartCount', total);
     window.dispatchEvent(new CustomEvent('cartUpdated'));

@@ -1,6 +1,6 @@
 import {Link,useNavigate} from 'react-router'
 import {useState,useEffect} from 'react'
-import api from '../api/axios.js'
+import axiosInstance from '../api/axiosInstance.js';
 
 const Navbar = () => {
 
@@ -13,7 +13,7 @@ const Navbar = () => {
       const loadCart = async ()=>{
         if(!userId) return setCartCount(0);
         try {
-          const res = await api.get(`/cart/${userId}`);
+          const res = await axiosInstance.get(`/cart/${userId}`);
           const total = (res.data.cart?.items || []).reduce(
             (sum, item) => sum + item.quantity, 0
           );

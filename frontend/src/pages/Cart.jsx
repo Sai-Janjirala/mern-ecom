@@ -1,4 +1,4 @@
-import api from "../api/axios.js";
+import axiosInstance from '../api/axiosInstance.js';
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router";
 
@@ -12,7 +12,7 @@ const Cart = () => {
   const loadCart = async () => {
     if (!userId) { setCartItems([]); setLoading(false); return; }
     try {
-      const res = await api.get(`/cart/${userId}`);
+      const res = await axiosInstance.get(`/cart/${userId}`);
       setCartItems(res.data.cart?.items || []);
     } catch { setCartItems([]); }
     finally { setLoading(false); }
@@ -22,7 +22,7 @@ const Cart = () => {
 
   // ── Removes a single item from the cart by productId ──
   const removeItem = async (productId) => {
-    await api.post(`/cart/remove`, { userId, productId });
+    await axiosInstance.post(`/cart/remove`, { userId, productId });
     loadCart();
     window.dispatchEvent(new CustomEvent("cartUpdated"));
   };
@@ -30,7 +30,7 @@ const Cart = () => {
   // ── Updates quantity; removes item if quantity hits 0 ──
   const updateQty = async (productId, quantity) => {
     if (quantity === 0) { await removeItem(productId); return; }
-    await api.post(`/cart/update`, { userId, productId, quantity });
+    await axiosInstance.post(`/cart/update`, { userId, productId, quantity });
     loadCart();
     window.dispatchEvent(new CustomEvent("cartUpdated"));
   };

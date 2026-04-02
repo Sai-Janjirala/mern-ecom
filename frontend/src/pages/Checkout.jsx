@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import api from "../api/axios.js";
+import axiosInstance from '../api/axiosInstance.js';
 import { useNavigate } from "react-router";
 
 const Checkout = () => {
@@ -11,8 +11,8 @@ const Checkout = () => {
 
   useEffect(() => {
     if (!userId) { navigate("/login"); return; }
-    api.get(`/cart/${userId}`).then((res) => setCart(res.data.cart));
-    api.get(`/address/${userId}`).then((res) => {
+    axiosInstance.get(`/cart/${userId}`).then((res) => setCart(res.data.cart));
+    axiosInstance.get(`/address/${userId}`).then((res) => {
       const addresses = res.data.addresses || [];
       setAddress(addresses);
       setSelectAddress(addresses[0] || null);
@@ -32,7 +32,7 @@ const Checkout = () => {
 
   const placeOrder = async () => {
     if (!selectedAddress) { alert("Please select an address"); return; }
-    const res = await api.post("/order/place", { userId, address: selectedAddress });
+    const res = await axiosInstance.post("/order/place", { userId, address: selectedAddress });
     navigate(`/order-success/${res.data.order._id}`);
   };
 

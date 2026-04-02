@@ -1,5 +1,5 @@
 import {useState,useEffect} from 'react'
-import api from '../api/axios.js'
+import axiosInstance from '../api/axiosInstance.js';
 import { useParams, Link } from 'react-router'
 
 const ProductDetails = () => {
@@ -11,7 +11,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const loadProduct = async () => {
       try {
-        const res = await api.get(`/products/${id}`);
+        const res = await axiosInstance.get(`/products/${id}`);
         setProduct(res.data?.product ?? null);
       } catch (error) {
         console.error('Failed to load product', error);
@@ -25,7 +25,7 @@ const ProductDetails = () => {
   const addToCart = async () => {
     const userId = localStorage.getItem('userId');
     if (!userId) { alert('Please login to add to cart'); return; }
-    const res = await api.post('/cart/add', { userId, productId: id });
+    const res = await axiosInstance.post('/cart/add', { userId, productId: id });
     const total = res.data.cart.items.reduce((sum, item) => sum + item.quantity, 0);
     localStorage.setItem('cartCount', total);
     window.dispatchEvent(new CustomEvent('cartUpdated'));

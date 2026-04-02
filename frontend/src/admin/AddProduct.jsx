@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import api from '../api/axios.js'
+import axiosInstance from '../api/axiosInstance.js';
 import { useNavigate } from 'react-router'
 
 const AddProduct = () => {
@@ -13,7 +13,7 @@ const AddProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/products', form)
+      await axiosInstance.post('/products', form)
       alert('Product added successfully')
       navigate('/admin/products')
     } catch(err) {

@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import {useNavigate, Link} from 'react-router'
-import api from '../api/axios.js'
+import axiosInstance from '../api/axiosInstance.js';
 
 const Login = () => {
   const [form,setForm] = useState({email:"",password:""});
@@ -16,7 +16,7 @@ const Login = () => {
   const handleSubmit = async (e)=>{
     e.preventDefault();
     try{
-      const res = await api.post("/auth/login", form)
+      const res = await axiosInstance.post("/auth/login", form)
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.user.id);
       setMsg(res.data.msg || "Login successful");

@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import api from "../api/axios.js";
+import axiosInstance from '../api/axiosInstance.js';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
 
   const loadProducts = async () => {
-    const response = await api.get('/products');
+    const response = await axiosInstance.get('/products');
     setProducts(response.data.products ?? []);
   }
 
   const deleteProduct = async (id) => {
     try {
-      await api.delete(`/products/${id}`);
+      await axiosInstance.delete(`/products/${id}`);
       alert("Product deleted successfully");
       loadProducts();
     } catch(err) { /* silent */ }

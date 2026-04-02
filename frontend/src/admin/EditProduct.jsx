@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../api/axios.js";
+import axiosInstance from '../api/axiosInstance.js';
 import { useNavigate, useParams } from "react-router";
 
 const EditProduct = () => {
@@ -9,7 +9,7 @@ const EditProduct = () => {
   const allowedFields = ['title', 'description', 'price', 'category', 'image', 'stock'];
 
   const loadProduct = async () => {
-    const res = await api.get('/products');
+    const res = await axiosInstance.get('/products');
     const product = (res.data.products ?? []).find((p) => p._id === id);
     if (product) {
       setForm({
@@ -28,7 +28,7 @@ const EditProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await api.put(`/products/${id}`, form);
+    await axiosInstance.put(`/products/${id}`, form);
     alert('Product updated successfully');
     navigate('/admin/products');
   }

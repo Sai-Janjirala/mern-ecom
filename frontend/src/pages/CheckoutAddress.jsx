@@ -1,5 +1,5 @@
 import { useState } from "react";
-import api from "../api/axios.js";
+import axiosInstance from '../api/axiosInstance.js';
 import { useNavigate } from "react-router";
 
 const CheckoutAddress = () => {
@@ -14,7 +14,7 @@ const CheckoutAddress = () => {
 
   // ── Saves the address via API then navigates to order checkout ──
   const saveAddress = async () => {
-    await api.post("/address/add", { ...form, userId });
+    await axiosInstance.post("/address/add", { ...form, userId });
     navigate("/checkout");
   };
 

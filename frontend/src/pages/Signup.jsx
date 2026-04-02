@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import api from "../api/axios.js";
+import axiosInstance from '../api/axiosInstance.js';
 
 export default function Signup() {
   const [form, setForm] = useState({ name:"", email:"", password:"" });
@@ -14,7 +14,7 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("/auth/signup", form);
+      const response = await axiosInstance.post("/auth/signup", form);
       setIsError(false);
       setMsg(response.data.msg || "Account created successfully!");
     } catch(err) {
