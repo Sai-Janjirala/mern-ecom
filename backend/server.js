@@ -14,7 +14,7 @@ dotenv.config({ path: fileURLToPath(new URL('./.env', import.meta.url)) });
 const app = express();
 
 app.use(cors({
-  origin: 'https://your-app.netlify.app', // TODO: Replace with actual Netlify URL after deployment
+  origin: 'https://shopvibe-ecom.netlify.app/',
   credentials: true,
 }));
 app.use(express.json());
